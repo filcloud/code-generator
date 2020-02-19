@@ -71,8 +71,8 @@ func (g *genGroup) Imports(c *generator.Context) (imports []string) {
 func (g *genGroup) GenerateType(c *generator.Context, t *types.Type, w io.Writer) error {
 	sw := generator.NewSnippetWriter(w, c, "$", "$")
 
-	apiPath := func(group string) string {
-		if group == "core" {
+	apiPath := func(group, groupName string) string {
+		if group == "core" && groupName != "" {
 			return `"/api"`
 		}
 		return `"` + g.apiPath + `"`
@@ -95,7 +95,7 @@ func (g *genGroup) GenerateType(c *generator.Context, t *types.Type, w io.Writer
 		"GroupGoName":                    g.groupGoName,
 		"Version":                        namer.IC(g.version),
 		"types":                          g.types,
-		"apiPath":                        apiPath(g.group),
+		"apiPath":                        apiPath(g.group, groupName),
 		"schemaGroupVersion":             c.Universe.Type(types.Name{Package: "k8s.io/apimachinery/pkg/runtime/schema", Name: "GroupVersion"}),
 		"runtimeAPIVersionInternal":      c.Universe.Variable(types.Name{Package: "k8s.io/apimachinery/pkg/runtime", Name: "APIVersionInternal"}),
 		"restConfig":                     c.Universe.Type(types.Name{Package: "k8s.io/client-go/rest", Name: "Config"}),
